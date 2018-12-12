@@ -190,19 +190,51 @@
       color: '#00',
       weight: 1,
       fillOpacity: .5,
-      fillColor: 'green'
+      fillColor: 'darkgreen'
     };
   }
 }).addTo(map);
 	});
 
-// 
-// //Annual Visitation Reports by Park data from https://irma.nps.gov/Stats/SSRSReports/National%20Reports/Annual%20Visitation%20By%20Park%20(1979%20-%20Last%20Calendar%20Year)
-// 	$.getJSON("data/parkVisits.geoJson", function(data) {
-// 	// the data loaded from the file is accessible here within this function scope!
-// 	console.log(data);
-// 	var visits = L.geoJson(data).addTo(map);
-// });
+//Annual Visitation Reports by Park data from https://irma.nps.gov/Stats/SSRSReports/National%20Reports/Annual%20Visitation%20By%20Park%20(1979%20-%20Last%20Calendar%20Year)
+	$.getJSON("data/parkvisits_centroids.geoJson", function(data) {
+	// the data loaded from the file is accessible here within this function scope!
+	var visitsLayer = L.geoJson(data, {
+		pointToLayer : function(feature, latlng) {
+			return L.circle(latlng, {
+				color: 'yellow',
+				radius: 20,
+				radius: getSize(visitsLayer),
+			}
+			);
+		}
+	})
+	visitsLayer.addTo(map);
+	drawMap(visitsLayer);
+	});
+
+	function drawMap(visitsLayer) {
+	visitsLayer.eachLayer(function(layer) {
+
+	layer.setStyle({
+		 color: 'green',
+		 radius: 200000,
+	  });
+	})
+	}
+
+	function getSize(visitsLayer) {
+		// var number = 20000;
+		// return number
+	visitsLayer.eachLayer(function(layer) {
+		var number = 20000;
+		return number
+	var value = Number(layer.feature.properties.Visits_Average);
+	// console.log(value);
+	})
+	}
+
+	console.log("reload3");
 
 	</script>
 
