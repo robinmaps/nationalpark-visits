@@ -142,10 +142,8 @@
 	<script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.js" charset="utf-8"></script>
 	<script>
 		var options = {
-			// center: [37, -97],
-			// zoom: 4.6,
-			center: [38.2, -78],
-			zoom: 9,
+			center: [37, -97],
+			zoom: 4.6,
 			zoomSnap: .1,
 			zoomControl: false
 		}
@@ -201,10 +199,10 @@
 	// the data loaded from the file is accessible here within this function scope!
 	var visitsLayer = L.geoJson(data, {
 		pointToLayer : function(feature, latlng) {
-			return L.circle(latlng, {
+			return L.circleMarker(latlng, {
 				color: 'yellow',
 				radius: 20,
-				radius: getSize(visitsLayer),
+				// radius: Number(feature.properties.Visits_Average*.00001),
 			}
 			);
 		}
@@ -218,23 +216,11 @@
 
 	layer.setStyle({
 		 color: 'green',
-		 radius: 200000,
+		 radius: layer.feature.properties.Visits_Average*.00001,
 	  });
 	})
 	}
 
-	function getSize(visitsLayer) {
-		// var number = 20000;
-		// return number
-	visitsLayer.eachLayer(function(layer) {
-		var number = 20000;
-		return number
-	var value = Number(layer.feature.properties.Visits_Average);
-	// console.log(value);
-	})
-	}
-
-	console.log("reload3");
 
 	</script>
 
