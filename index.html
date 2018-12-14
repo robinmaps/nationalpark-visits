@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 
@@ -127,14 +126,15 @@
 
 <body>
 
-	<h1>National Park Service Visitation</h1>
+	<h1>National Parks Visitation</h1>
 
 	<div id='map'></div>
 
 	<section id="about">
 		<h2>About</h2>
-			<p>Average annual recreational visits from 1998-2017 are represented. Data provided by National Parks Service <a href ='https://public-nps.opendata.arcgis.com/'>Open Data </a> and <a href = "https://irma.nps.gov/Portal/">Integrated Resource Management Applications (IRMA) Portal</a>. Data is not available for all units. </p>
-			<p>Map authored Robin Bruns</p>
+		<p>Average annual recreational visits from 1998-2017 are represented. Data provided by National Parks Service <a href='https://public-nps.opendata.arcgis.com/'>Open Data </a> and <a href="https://irma.nps.gov/Portal/">Integrated Resource
+				Management Applications (IRMA) Portal</a>. Data is not available for all units. </p>
+		<p>Map authored Robin Bruns</p>
 	</section>
 
 	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
@@ -180,7 +180,7 @@
 
 		map.addLayer(tiles);
 
-// add state boundaries
+		// add state boundaries
 		$.getJSON("data/us_states_20m.geojson", function(data) {
 			var stateLayer = L.geoJson(data, {
 				style: function(feature) {
@@ -204,73 +204,85 @@
 
 		});
 
-//data from https://public-nps.opendata.arcgis.com/datasets/b1598d3df2c047ef88251016af5b0f1e_0?geometry=-137.566%2C-2.493%2C112.57%2C50.715
+		//add national park boundaries
 		var parksLayer = $.getJSON("https://opendata.arcgis.com/datasets/b1598d3df2c047ef88251016af5b0f1e_0.geojson", function(data) {
-		// $.getJSON("data/nationalParks.geoJson", function(data) {
-		var parks = L.geoJson(data, {
-  style: function(feature) {
-  return {
-      weight: .9,
-      fillOpacity: .6,
-			color: '#2d4b1e',
-      fillColor: '#2d4b1e',
-			interactive: false,
-    };
-  }
-}).addTo(map);
-	});
-
-	// when parksLayer is done loading, do the following...
-	$.when(parksLayer).done(function() {
-//Annual Visitation Reports by Park data from https://irma.nps.gov/Stats/SSRSReports/National%20Reports/Annual%20Visitation%20By%20Park%20(1979%20-%20Last%20Calendar%20Year)
-	$.getJSON("data/parkvisits_centroids.geoJson", function(data) {
-	// the data loaded from the file is accessible here within this function scope!
-	var visitsLayer = L.geoJson(data, {
-		pointToLayer : function(feature, latlng) {
-			return L.circleMarker(latlng, {
-			}
-			);
-		}
-	})
-	visitsLayer.addTo(map);
-	drawMap(visitsLayer);
-	drawTooltip(visitsLayer);
-	});
-	})
-
-	function drawMap(visitsLayer) {
-	visitsLayer.eachLayer(function(layer) {
-
-	layer.setStyle({
-		 color: '#c56c39',
-		 fillColor: '#ffcc00',
-		 radius: layer.feature.properties.Visits_Average*.000005,
-		 weight: 1.5,
-		 fillOpacity: .4,
-	  });
-	})
-	}
-
-	function drawTooltip(dataLayer) {
-
-		dataLayer.eachLayer(function(layer) {
-			var visits = Number(layer.feature.properties.Visits_Average).toLocaleString();
-			var tooltip = "<b>" + layer.feature.properties.FIRST_UNIT + "</b>" + "<br />" + "<b>Annual Visitors: </b>" +  visits;
-
-			// we now have access to dataLayer here!
-			if (L.Browser.mobile) {
-				// if true use popup
-				layer.bindPopup(tooltip);
-			} else {
-				// if false use tooltip
-				layer.bindTooltip(tooltip, {
-					sticky: true
-				});
-			};
+			// $.getJSON("data/nationalParks.geoJson", function(data) {
+			var parks = L.geoJson(data, {
+				style: function(feature) {
+					return {
+						weight: .9,
+						fillOpacity: .6,
+						color: '#2d4b1e',
+						fillColor: '#2d4b1e',
+						interactive: false,
+					};
+				}
+			}).addTo(map);
 		});
-	}
 
 
+		// $.getJSON("data/parkvisits_centroids.geoJson", function(data) {
+		// 	data.features.sort(function(a) {
+		// 		return data.feature.properties.Visits_Average
+		// 	})
+		// 	});
+
+		// when parksLayer is done loading, do the following...
+		$.when(parksLayer).done(function() {
+			//Annual Visitation Reports by Park data from https://irma.nps.gov/Stats/SSRSReports/National%20Reports/Annual%20Visitation%20By%20Park%20(1979%20-%20Last%20Calendar%20Year)
+			$.getJSON("data/parkvisits_centroids.geoJson", function(data) {
+					data.features.sort(function (a, b) {
+						return b.properties.Visits_Average - a.properties.Visits_Average;
+					})
+				// the data loaded from the file is accessible here within this function scope!
+				var visitsLayer = L.geoJson(data, {
+					pointToLayer: function(feature, latlng) {
+						return L.circleMarker(latlng, {});
+					}
+				})
+				visitsLayer.addTo(map);
+				drawMap(visitsLayer);
+				drawTooltip(visitsLayer);
+			});
+		})
+
+		function drawMap(visitsLayer) {
+			visitsLayer.eachLayer(function(layer) {
+
+				layer.setStyle({
+					color: '#c56c39',
+					fillColor: '#ffcc00',
+					// radius: layer.feature.properties.Visits_Average * .000005,
+					radius: getRadius(layer.feature.properties.Visits_Average),
+					weight: 1.5,
+					fillOpacity: .4,
+				});
+			})
+		}
+
+		function getRadius(area) {
+  	var radius = Math.sqrt(area/Math.PI);
+  	return radius * .02;
+		}
+
+		function drawTooltip(dataLayer) {
+
+			dataLayer.eachLayer(function(layer) {
+				var visits = Number(layer.feature.properties.Visits_Average).toLocaleString();
+				var tooltip = "<b>" + layer.feature.properties.FIRST_UNIT + "</b>" + "<br />" + "<b>Annual Visitors: </b>" + visits;
+
+				// we now have access to dataLayer here!
+				if (L.Browser.mobile) {
+					// if true use popup
+					layer.bindPopup(tooltip);
+				} else {
+					// if false use tooltip
+					layer.bindTooltip(tooltip, {
+						sticky: true
+					});
+				};
+			});
+		}
 	</script>
 
 </body>
