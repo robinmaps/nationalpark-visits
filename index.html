@@ -135,9 +135,10 @@
 
 	<section id="about">
 		<h2>About</h2>
-		<p>Markers represent average annual recreational visits from 1998-2017 at the park center point. Data provided by National Parks Service <a href='https://public-nps.opendata.arcgis.com/'>Open Data </a> and <a href="https://irma.nps.gov/Portal/">Integrated Resource
-				Management Applications (IRMA) Portal</a>. Data is not available for all units.
-		Map authored Robin Bruns  </p>
+		<p>Markers represent average annual recreational visits from 1998 to 2017 at the park center point. Data provided by National Parks Service <a href='https://public-nps.opendata.arcgis.com/'>Open Data </a> and <a href="https://irma.nps.gov/Portal/">Integrated
+				Resource
+				Management Applications (IRMA) Portal</a>. Data is not available for some units.
+			Map authored Robin Bruns </p>
 	</section>
 
 	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
@@ -147,7 +148,7 @@
 	<script>
 		var options = {
 			center: [37, -97],
-			zoom: 4.8,
+			zoom: 4.6,
 			zoomSnap: .1,
 			zoomControl: false,
 			minZoom: 2,
@@ -176,20 +177,12 @@
 
 		// Get basemap attributes from Leaflet Providers
 		var basemap_attributes = {
-			attribution:  'Tiles &copy; Esri &mdash; Source: Esri',
+			attribution: 'Tiles &copy; Esri &mdash; Source: Esri',
 			// subdomains: 'abcd',
 			maxZoom: 13
 		};
 		// requests some map tiles
 		var tiles = L.tileLayer(basemap_url, basemap_attributes);
-
-		// request some slippy map tiles
-		// var tiles = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}{r}.{ext}', {
-		// 	attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-		// 	subdomains: 'abcd',
-		// 	maxZoom: 20,
-		// 	ext: 'png'
-		// });
 
 		map.addLayer(tiles);
 
@@ -202,11 +195,8 @@
 						fillColor: '#bfbfbf',
 						weight: 1.4,
 						opacity: .3,
-						// dashArray: "6, 4",
 						fillOpacity: 0.2,
 						interactive: false,
-						// fillColor: '#808080',
-						// fillOpacity: .4,
 						interactive: false,
 
 					};
@@ -230,23 +220,23 @@
 						fillOpacity: .6,
 						color: '#2d4b1e',
 						fillColor: '#2d4b1e',
-						interactive: false,
+						// interactive: false,
 					};
 				}
 			})
 			parksLayer.addTo(map);
-		// 	if (map.getZoom() >= 5.8) {
-		// 	drawTooltip(parksLayer);
-		// }
+			// 	if (map.getZoom() >= 5.6) {
+			drawTooltip(parksLayer);
+			// }
 		});
 
 		// when parksLayer is done loading, do the following...
 		$.when(parks).done(function() {
 			//Annual Visitation Reports by Park data from https://irma.nps.gov/Stats/SSRSReports/National%20Reports/Annual%20Visitation%20By%20Park%20(1979%20-%20Last%20Calendar%20Year)
-			$.getJSON("data/parkvisits_centroids.geoJson", function(data) {
-					data.features.sort(function (a, b) {
-						return b.properties.Visits_Average - a.properties.Visits_Average;
-					})
+			$.getJSON("data/parkvisits_centroids.geojson", function(data) {
+				data.features.sort(function(a, b) {
+					return b.properties.Visits_Average - a.properties.Visits_Average;
+				})
 				// the data loaded from the file is accessible here within this function scope!
 				var visitsLayer = L.geoJson(data, {
 					pointToLayer: function(feature, latlng) {
@@ -272,29 +262,27 @@
 				});
 			})
 			visitsLayer.eachLayer(function(layer) {
-			layer.on('mouseover', function(e){
-			e.target.setStyle({
-				// fillColor: '#c56c39',
-				fillOpacity: 1,
-			})
-		})
+				layer.on('mouseover', function(e) {
+					e.target.setStyle({
+						fillOpacity: 1,
+					})
+				})
 
-		layer.on('mouseout', function(e){
-			e.target.setStyle({
-				// fillColor: '#ffcc00',
-				fillOpacity: .4,
+				layer.on('mouseout', function(e) {
+					e.target.setStyle({
+						fillOpacity: .4,
+					})
+					layer.on('click', function(e) {
+						// sets the map's center lat/lon using the click event location and changes the zoom level
+						map.setView(e.latlng, (map.getZoom() + 1));
+					});
+				})
 			})
-			layer.on('click', function(e) {
-	  // sets the map's center lat/lon using the click event location and changes the zoom level
-	  map.setView(e.latlng, (map.getZoom() + 1));
-	});
-		})
-		})
 		}
 
 		function getRadius(area) {
-  	var radius = Math.sqrt(area/Math.PI);
-  	return radius * .025;
+			var radius = Math.sqrt(area / Math.PI);
+			return radius * .025;
 		}
 
 		function drawTooltip(dataLayer) {
@@ -305,10 +293,9 @@
 				if (layer.feature.properties.FIRST_UNIT) {
 					tooltip += "<b>" + layer.feature.properties.FIRST_UNIT + "</b>" + "<br />" + "<b>Annual Visitors: </b>" + visits;
 				}
-				// if (layer.feature.properties.UNIT_NAME) {
-				// 	tooltip += "<b>" + layer.feature.properties.UNIT_NAME + "</b>";
-				// 	// tooltip += "<b>"  + '<a href = "https://www.nps.gov/vick/index.htm">layer.feature.properties.UNIT_NAME</a>' + "</b>";
-				// }
+				if (layer.feature.properties.UNIT_NAME) {
+					tooltip += "<b>" + layer.feature.properties.UNIT_NAME + "</b>";
+				}
 				if (L.Browser.mobile) {
 					// if true use popup
 					layer.bindPopup(tooltip);
