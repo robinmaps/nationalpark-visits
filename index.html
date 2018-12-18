@@ -137,7 +137,7 @@
 		<h2>About</h2>
 		<p>Markers represent average annual recreational visits from 1998 to 2017 at the park center point. Data provided by National Parks Service <a href='https://public-nps.opendata.arcgis.com/'>Open Data </a> and <a href="https://irma.nps.gov/Portal/">Integrated
 				Resource
-				Management Applications (IRMA) Portal</a>. Data is not available for some units.
+				Management Applications (IRMA) Portal</a>. Data is not available for every units.
 			Map authored Robin Bruns </p>
 	</section>
 
@@ -154,23 +154,12 @@
 			minZoom: 2,
 		}
 
-
-		var locate_options = {
-			position: 'topright',
-			strings: {
-				title: "Show my location"
-			}
-		}
-
 		var map = L.map('map', options);
 
 		// add zoom control to top right window position
 		L.control.zoom({
 			position: 'topright'
 		}).addTo(map);
-
-		// add geolocation control to top right window position (Leaflet can handle multiple top-right elements)
-		L.control.locate(locate_options).addTo(map);
 
 		// Get basemap URL from Leaflet Providers
 		var basemap_url = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Shaded_Relief/MapServer/tile/{z}/{y}/{x}'
