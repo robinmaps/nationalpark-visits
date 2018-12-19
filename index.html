@@ -77,8 +77,8 @@
 		}
 
 		a {
-			color: '#567b9e';
-			text-decoration: none;
+			color: '#3e8eae';
+			text-decoration: underline;
 		}
 
 		a:hover {
@@ -134,10 +134,12 @@
 
 	<section id="about">
 		<h2>About</h2>
-		<p>Markers represent average annual recreational visits from 1998 to 2017 at the park center point. Data provided by National Parks Service <a href='https://public-nps.opendata.arcgis.com/'>Open Data </a> and <a href="https://irma.nps.gov/Portal/">Integrated
-				Resource
-				Management Applications Portal</a>. Data is not available for every unit.
-			Map authored Robin Bruns </p>
+		<p>The National Park System preserves natural and cultural resources on over 85 million acres of public land. Over 330 million visits were made to National Park Service units in 2017. On this map, markers at the park center point represent average annual recreational visits, measured from 1998 to 2017. Data was provided by National Park Service
+			<a href='https://public-nps.opendata.arcgis.com/'>Open Data </a>
+			and
+			<a href="https://irma.nps.gov/Portal/">Integrated Resource Management Applications Portal</a>.
+			Statistics are not available for every unit.
+			Map authored by Robin Bruns </p>
 	</section>
 
 	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
@@ -213,28 +215,26 @@
 		// 		}
 		// 	})
 		// 	parksLayer.addTo(map);
-		// 	// 	if (map.getZoom() >= 5.6) {
-		// 	drawTooltip(parksLayer);
-		// 	// }
 		// });
 		//
+
 		// // when parksLayer is done loading, do the following...
 		// $.when(parks).done(function() {
-			//Annual Visitation Reports by Park data from https://irma.nps.gov/Stats/SSRSReports/National%20Reports/Annual%20Visitation%20By%20Park%20(1979%20-%20Last%20Calendar%20Year)
-			$.getJSON("data/parkvisits_centroids.geojson", function(data) {
-				data.features.sort(function(a, b) {
-					return b.properties.Visits_Average - a.properties.Visits_Average;
-				})
-				// the data loaded from the file is accessible here within this function scope!
-				var visitsLayer = L.geoJson(data, {
-					pointToLayer: function(feature, latlng) {
-						return L.circleMarker(latlng, {});
-					}
-				})
-				visitsLayer.addTo(map);
-				drawMap(visitsLayer);
-				drawTooltip(visitsLayer);
-			});
+		//Annual Visitation Reports by Park data from https://irma.nps.gov/Stats/SSRSReports/National%20Reports/Annual%20Visitation%20By%20Park%20(1979%20-%20Last%20Calendar%20Year)
+		$.getJSON("data/parkvisits_centroids.geojson", function(data) {
+			data.features.sort(function(a, b) {
+				return b.properties.Visits_Average - a.properties.Visits_Average;
+			})
+			// the data loaded from the file is accessible here within this function scope!
+			var visitsLayer = L.geoJson(data, {
+				pointToLayer: function(feature, latlng) {
+					return L.circleMarker(latlng, {});
+				}
+			})
+			visitsLayer.addTo(map);
+			drawMap(visitsLayer);
+			drawTooltip(visitsLayer);
+		});
 		// })
 
 		function drawMap(visitsLayer) {
@@ -280,9 +280,6 @@
 				var tooltip = "<span></span>";
 				if (layer.feature.properties.FIRST_UNIT) {
 					tooltip += "<b>" + layer.feature.properties.FIRST_UNIT + "</b>" + "<br />" + "<b>Annual Visitors: </b>" + visits;
-				}
-				if (layer.feature.properties.UNIT_NAME) {
-					tooltip += "<b>" + layer.feature.properties.UNIT_NAME + "</b>";
 				}
 				if (L.Browser.mobile) {
 					// if true use popup
