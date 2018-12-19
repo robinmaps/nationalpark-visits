@@ -200,26 +200,25 @@
 
 		});
 
-		// //add national park boundaries
-		// var parks = $.getJSON("https://opendata.arcgis.com/datasets/b1598d3df2c047ef88251016af5b0f1e_0.geojson", function(data) {
-		// 	// $.getJSON("data/nationalParks.geoJson", function(data) {
-		// 	var parksLayer = L.geoJson(data, {
-		// 		style: function(feature) {
-		// 			return {
-		// 				weight: .9,
-		// 				fillOpacity: .6,
-		// 				color: '#2d4b1e',
-		// 				fillColor: '#2d4b1e',
-		// 				// interactive: false,
-		// 			};
-		// 		}
-		// 	})
-		// 	parksLayer.addTo(map);
-		// });
-		//
+		//add national park boundaries
+		var parks = $.getJSON("data/parks.geojson", function(data) {
+			var parksLayer = L.geoJson(data, {
+				style: function(feature) {
+					return {
+						weight: .9,
+						fillOpacity: .6,
+						color: '#2d4b1e',
+						fillColor: '#2d4b1e',
+						// interactive: false,
+					};
+				}
+			})
+			parksLayer.addTo(map);
+		});
+		
 
 		// // when parksLayer is done loading, do the following...
-		// $.when(parks).done(function() {
+		$.when(parks).done(function() {
 		//Annual Visitation Reports by Park data from https://irma.nps.gov/Stats/SSRSReports/National%20Reports/Annual%20Visitation%20By%20Park%20(1979%20-%20Last%20Calendar%20Year)
 		$.getJSON("data/parkvisits_centroids.geojson", function(data) {
 			data.features.sort(function(a, b) {
@@ -235,6 +234,7 @@
 			drawMap(visitsLayer);
 			drawTooltip(visitsLayer);
 		});
+	})
 		// })
 
 		function drawMap(visitsLayer) {
