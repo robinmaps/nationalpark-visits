@@ -17,9 +17,9 @@
 		body {
 			margin: 0;
 			padding: 0;
-			font-family: 'Josefin+Sans', sans-serif;
+			font-family: 'Sans', sans-serif;
 			font-size: 100%;
-			color: "black";
+			color: #111;
 		}
 
 		h1 {
@@ -28,12 +28,10 @@
 			top: 10px;
 			left: 15px;
 			font-size: 1.5em;
-			font-family: 'Josefin+Sans', sans-serif;
+			font-family: 'Josefin', sans-serif;
 			font-weight: 700;
 			letter-spacing: .04em;
 			padding: 10px 15px;
-			/* Add styles to match Leaflet UI elements */
-			/* background: rgba(256, 256, 256, .3); */
 			background: rgba(191, 191, 191, .5);
 			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
 			border: 2px solid rgba(191, 191, 191, .2);
@@ -42,7 +40,7 @@
 		}
 
 		h2 {
-			font-family: 'Josefin+Sans', sans-serif;
+			font-family: 'Josefin', sans-serif;
 			font-size: 1.2em;
 			letter-spacing: .04em;
 
@@ -77,17 +75,19 @@
 		}
 
 		a {
-			color: '#3e8eae';
+			color: #ffcc00;
 			text-decoration: underline;
 		}
 
 		a:hover {
-			text-decoration: underline;
+			text-decoration: none;
 		}
+
+		
 
 		/* Leaflet popup styles */
 		.leaflet-popup-content {
-			font-family: 'Josefin+Sans', sans-serif;
+			font-family: 'Josefin', sans-serif;
 			font-size: 1.1em;
 		}
 
@@ -111,7 +111,7 @@
 			}
 
 			.leaflet-popup-content {
-				font-family: 'Josefin+Sans', sans-serif;
+				font-family: 'Josefin', sans-serif;
 				font-size: 0.9em;
 			}
 		}
@@ -200,26 +200,32 @@
 
 		});
 
-		// //add national park boundaries
-		// var parks = $.getJSON("https://opendata.arcgis.com/datasets/b1598d3df2c047ef88251016af5b0f1e_0.geojson", function(data) {
-		// 	// $.getJSON("data/nationalParks.geoJson", function(data) {
-		// 	var parksLayer = L.geoJson(data, {
-		// 		style: function(feature) {
-		// 			return {
-		// 				weight: .9,
-		// 				fillOpacity: .6,
-		// 				color: '#2d4b1e',
-		// 				fillColor: '#2d4b1e',
-		// 				// interactive: false,
-		// 			};
-		// 		}
-		// 	})
-		// 	parksLayer.addTo(map);
-		// });
-		//
+		//add national park boundaries
+		var parks = $.getJSON("data/parks.geojson", function(data) {
+			var parksLayer = L.geoJson(data, {
+				style: function(feature) {
+					return {
+						weight: .9,
+						fillOpacity: .6,
+						color: '#2d4b1e',
+						fillColor: '#2d4b1e',
+						// interactive: false,
+					};
+				},
+
+				onEachFeature: function (feature, layer) {
+					
+					popup = "<h3>" + feature.properties.PARKNAME + "</h3>"
+					layer.bindPopup(popup)
+				}
+
+			})
+			parksLayer.addTo(map);
+		});
+		
 
 		// // when parksLayer is done loading, do the following...
-		// $.when(parks).done(function() {
+		$.when(parks).done(function() {
 		//Annual Visitation Reports by Park data from https://irma.nps.gov/Stats/SSRSReports/National%20Reports/Annual%20Visitation%20By%20Park%20(1979%20-%20Last%20Calendar%20Year)
 		$.getJSON("data/parkvisits_centroids.geojson", function(data) {
 			data.features.sort(function(a, b) {
@@ -235,6 +241,7 @@
 			drawMap(visitsLayer);
 			drawTooltip(visitsLayer);
 		});
+	})
 		// })
 
 		function drawMap(visitsLayer) {
