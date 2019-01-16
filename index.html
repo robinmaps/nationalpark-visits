@@ -77,7 +77,7 @@
 		}
 
 		a {
-			color: '#3e8eae';
+			color: '#c56c39';
 			text-decoration: underline;
 		}
 
@@ -163,11 +163,13 @@
 		}).addTo(map);
 
 		// Get basemap URL from Leaflet Providers
-		var basemap_url = 'https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png'
+		// var basemap_url = 'https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png'
+
+		var basemap_url = 'https://api.mapbox.com/styles/v1/robinbruns/cinseex4x0029zvnlcwiuav41.html?fresh=true&title=true&access_token=pk.eyJ1Ijoicm9iaW5icnVucyIsImEiOiJjaW5zZTQ0eGQxMTRqdWttM2M2ZnBsaG94In0.s1doTs0FkLp2ZzYqiUnbTw#9.5/36.155557/-84.530530/0'
 
 		// Get basemap attributes from Leaflet Providers
 		var basemap_attributes = {
-			attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+			attribution: "&copy; <a href='https://www.mapbox.com/about/maps/'>Mapbox</a> © <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a> <strong><a href='https://www.mapbox.com/map-feedback/' target='_blank'>Improve this map</a></strong>",
 			subdomains: 'abcd',
 			maxZoom: 19
 		};
@@ -175,30 +177,6 @@
 		var tiles = L.tileLayer(basemap_url, basemap_attributes);
 
 		map.addLayer(tiles);
-
-		// add state boundaries
-		$.getJSON("data/us_states_20m.geojson", function(data) {
-			var stateLayer = L.geoJson(data, {
-				style: function(feature) {
-					return {
-						color: '#4d4d4d',
-						fillColor: '#bfbfbf',
-						weight: 1.4,
-						opacity: .3,
-						fillOpacity: 0.05,
-						interactive: false,
-						interactive: false,
-
-					};
-				}
-
-
-			});
-
-			// Add layer to map!
-			stateLayer.addTo(map)
-
-		});
 
 		// //add national park boundaries
 		// var parks = $.getJSON("https://opendata.arcgis.com/datasets/b1598d3df2c047ef88251016af5b0f1e_0.geojson", function(data) {
