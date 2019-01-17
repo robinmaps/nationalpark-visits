@@ -77,7 +77,7 @@
 		}
 
 		a {
-			color: '';
+			color: #c56c39;
 			text-decoration: none;
 		}
 
@@ -95,7 +95,7 @@
 		When browser is 900px high or less
 		make the font a little smaller.
 		 */
-		@media screen and (max-height: 400px) {
+		@media screen and (max-height: 900px) {
 
 			#about p,
 			#about h2 {
@@ -128,8 +128,8 @@
   display: block;
   height: 20px;
   width: 65px;
-  left: 12px;
-  bottom:10px;
+  right: .4em;
+  bottom: 1.4em;
   text-indent: -9999px;
   z-index: 99999;
   overflow: hidden;
@@ -147,7 +147,9 @@
 
 	<h1>National Parks Visitation</h1>
 
-	<div id='map'></div>
+	<div id='map'>
+	<a href="http://mapbox.com/about/maps" class='mapbox-wordmark' target="_blank">Mapbox</a>
+	</div>
 
 
 	<section id="about">
@@ -158,9 +160,6 @@
 			<a href="https://irma.nps.gov/Portal/">Integrated Resource Management Applications Portal</a>.
 			Statistics are not available for every unit.
 			Map authored by Robin Bruns
-			<br />
-			<br />
-			<a href="http://mapbox.com/about/maps" class='mapbox-wordmark' target="_blank">Mapbox</a>
 			</p>
 	</section>
 
